@@ -1,13 +1,14 @@
 <template>
   <div>
-    <div class="center">
-      <h1>LeadHit</h1>
-      <vs-input primary placeholder="ID" v-model="value">
-        <template v-if="proverka" #message-success> {{ confirm }} </template>
-        <template v-else #message-danger> {{ confirm }} </template>
-      </vs-input>
-      <vs-button @click="check()"> Войти </vs-button>
-    </div>
+    <form action="#" class="form-example">
+      <div class="center">
+        <h1>LeadHit</h1>
+        <vs-input required primary placeholder="ID" v-model="value">
+          <template #message-danger> {{ confirm }} </template>
+        </vs-input>
+        <vs-button @click="check()"> Войти </vs-button>
+      </div>
+    </form>
   </div>
 </template>
 <script>
@@ -15,9 +16,9 @@ const axios = require("axios").default;
 export default {
   data() {
     return {
+      auth: false,
       value: "",
       confirm: "",
-      proverka: Boolean,
     };
   },
   methods: {
@@ -40,17 +41,14 @@ export default {
         } catch (error) {
           console.log(error);
         }
-        this.proverka = true;
-        this.confirm = "Запрос отправлен";
         if (res === "ok") {
-          localStorage.setItem("leadhit-site-id", this.value);
+          localStorage.setItem("Leadhit-Site-Id", this.value);
           this.$router.push("/analytics");
+          console.log(localStorage.length);
         } else {
-          this.proverka = false;
           this.confirm = "запрос не был отправлен";
         }
       } else {
-        this.proverka = false;
         this.confirm = "id должен содержать 24 символа";
       }
     },
