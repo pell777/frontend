@@ -30,16 +30,10 @@ export default {
 
     root.setThemes([am5themes_Animated.new(root)]);
 
-    let chart = root.container.children.push(
-      am5xy.XYChart.new(root, {
-        focusable: true,
-        panX: true,
-        panY: true,
-        wheelX: "panX",
-        wheelY: "zoomX",
-      })
-    );
+    let chart = root.container.children.push(am5xy.XYChart.new(root, {}));
+
     chart.get("colors").set("colors", [am5.color("#800080")]);
+
     // Define data
     let data = [
       { date: new Date(2020, 6, 1).getTime(), value: 213 },
@@ -74,9 +68,8 @@ export default {
     ];
 
     // Create Y-axis
-    var yAxis = chart.yAxes.push(
+    let yAxis = chart.yAxes.push(
       am5xy.ValueAxis.new(root, {
-        maxDeviation: 0.2,
         renderer: am5xy.AxisRendererY.new(root, {}),
       })
     );
@@ -84,37 +77,68 @@ export default {
     // Create X-Axis
     let xAxis = chart.xAxes.push(
       am5xy.DateAxis.new(root, {
-        baseInterval: { timeUnit: "day", count: 5 },
-        renderer: am5xy.AxisRendererX.new(root, {
-          minGridDistance: 50,
-        }),
+        startLocation: 0,
+        endLocation: 1,
+        baseInterval: { timeUnit: "day", count: 1 },
+        renderer: am5xy.AxisRendererX.new(root, {}),
       })
     );
+    xAxis.get("renderer").grid.template.setAll({
+      opacity: 0,
+    });
 
+    yAxis.get("renderer").grid.template.setAll({
+      opacity: 0,
+    });
     // Create series
     var series = chart.series.push(
       am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
         xAxis: xAxis,
         yAxis: yAxis,
         valueYField: "value",
         valueXField: "date",
-        connect: false,
+        tooltip: am5.Tooltip.new(root, {}),
       })
     );
+    series
+      .get("tooltip")
+      .label.set(
+        "text",
+        "Количество посещений {valueY}\n \n Дата: {valueX.formatDate()}"
+      );
     series.strokes.template.setAll({
       strokeWidth: 4,
+    });
+    series.bullets.push(function () {
+      return am5.Bullet.new(root, {
+        sprite: am5.Circle.new(root, {
+          radius: 7,
+          fill: series.get("fill"),
+        }),
+      });
     });
     series.fills.template.setAll({
       fillOpacity: 0.35,
       visible: true,
       fill: "#000000",
     });
-   
+
+    xAxis.set("tooltip", am5.Tooltip.new(root, {}));
+
+    yAxis.set("tooltip", am5.Tooltip.new(root, {}));
     series.data.setAll(data);
 
     // Add cursor
-    chart.set("cursor", am5xy.XYCursor.new(root, {}));
+
+    var cursor = chart.set(
+      "cursor",
+      am5xy.XYCursor.new(root, {
+        xAxis: xAxis,
+        yAxis: yAxis,
+      })
+    );
+    cursor.lineY.set("visible", false);
+    cursor.lineX.set("visible", false);
   },
 };
 </script>
@@ -139,8 +163,12 @@ h2 {
   margin-top: 1%;
 }
 
-#chartdiv {
-  width: 100%;
+.hello {
+  margin-top: 2%;
+  width: 98%;
   height: 500px;
+  margin-left: 1%;
+  border: 1px solid rgb(0, 0, 0); /* Белая рамка */
+  border-radius: 5px; /* Радиус скругления */
 }
 </style>
