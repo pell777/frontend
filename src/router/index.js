@@ -23,7 +23,7 @@ const router = new VueRouter({
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach( (to, from, next) => {
   const requireAuth = to.matched.some((rout) => rout.meta.auth);
   if (!localStorage.getItem("Leadhit-Site-Id") && requireAuth) {
     next("/auth");
