@@ -91,7 +91,7 @@ export default {
       opacity: 0,
     });
     // Create series
-    var series = chart.series.push(
+    let series = chart.series.push(
       am5xy.LineSeries.new(root, {
         xAxis: xAxis,
         yAxis: yAxis,
